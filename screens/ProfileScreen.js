@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, RADII, FONTS } from '../theme';
 
 export default function ProfileScreen() {
   const [theme, setTheme] = useState('light');
   const currentTheme = COLORS[theme];
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <View
@@ -14,6 +18,16 @@ export default function ProfileScreen() {
         { backgroundColor: currentTheme.bg },
       ]}
     >
+      {/* Theme Toggle Button */}
+      <Pressable onPress={toggleTheme} style={styles.themeToggle}>
+        <Ionicons
+          name={theme === 'light' ? 'moon' : 'sunny'}
+          size={28}
+          color={currentTheme.text}
+        />
+      </Pressable>
+
+      {/* Profile Card */}
       <View
         style={[
           styles.card,
@@ -43,6 +57,18 @@ export default function ProfileScreen() {
         >
           Mobile Developer
         </Text>
+
+        {/* Like Button */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.likeButton,
+            { backgroundColor: pressed ? '#e63946' : '#ff6b6b' },
+          ]}
+          onPress={() => console.log('Profile Liked!')}
+        >
+          <Ionicons name="heart" size={24} color="#fff" />
+          <Text style={styles.likeText}>Like</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -55,19 +81,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  themeToggle: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    padding: SPACING.sm,
+  },
+
   card: {
     width: '85%',
     borderRadius: RADII.md,
     alignItems: 'center',
     padding: SPACING.lg,
-
-    // iOS Shadow
+    // iOS shadow
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
-
-    // Android Shadow
+    // Android shadow
     elevation: 6,
   },
 
@@ -82,5 +113,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: SPACING.sm,
     opacity: 0.7,
+  },
+
+  likeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: 50,
+    marginTop: SPACING.md,
+  },
+
+  likeText: {
+    color: '#fff',
+    fontFamily: FONTS.bold,
+    fontSize: 16,
+    marginLeft: SPACING.sm,
   },
 });
