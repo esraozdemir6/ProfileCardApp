@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, RADII, FONTS } from '../theme';
 
 export default function ProfileScreen() {
-  const [theme, setTheme] = useState('light'); // ileride dark da ekleyeceğiz
+  const [theme, setTheme] = useState('light');
   const currentTheme = COLORS[theme];
 
   return (
@@ -13,22 +14,34 @@ export default function ProfileScreen() {
         { backgroundColor: currentTheme.bg },
       ]}
     >
-      <View style={styles.card}>
+      <View
+        style={[
+          styles.card,
+          { backgroundColor: currentTheme.card },
+        ]}
+      >
+        <Ionicons
+          name="person-circle-outline"
+          size={80}
+          color={currentTheme.text}
+        />
+
         <Text
           style={[
-            styles.title,
+            styles.name,
             { color: currentTheme.text },
           ]}
         >
-          Profile Card
+          John Doe
         </Text>
+
         <Text
           style={[
-            styles.subtitle,
+            styles.role,
             { color: currentTheme.text },
           ]}
         >
-          This is where your profile content will go.
+          Mobile Developer
         </Text>
       </View>
     </View>
@@ -41,27 +54,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   card: {
+    width: '85%',
+    borderRadius: RADII.md,
+    alignItems: 'center',
     padding: SPACING.lg,
-    borderRadius: RADII.lg,
-    backgroundColor: COLORS.light.card, // şimdilik light baz alınabilir
-    // gölgeyi ileride platforma göre ekleyebiliriz
-    shadowColor: COLORS.light.cardShadow,
-    shadowOffset: { width: 0, height: 4 },
+
+    // iOS Shadow
+    shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 4,
-    minWidth: 260,
-    alignItems: 'center',
+    shadowOffset: { width: 0, height: 4 },
+
+    // Android Shadow
+    elevation: 6,
   },
-  title: {
+
+  name: {
     fontFamily: FONTS.bold,
     fontSize: 24,
-    marginBottom: SPACING.sm,
+    marginTop: SPACING.md,
   },
-  subtitle: {
+
+  role: {
     fontFamily: FONTS.regular,
-    fontSize: 14,
-    textAlign: 'center',
+    fontSize: 16,
+    marginTop: SPACING.sm,
+    opacity: 0.7,
   },
 });
