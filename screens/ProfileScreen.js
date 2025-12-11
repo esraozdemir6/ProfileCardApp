@@ -11,14 +11,24 @@ import { COLORS, SPACING, RADII, FONTS } from '../theme';
 
 export default function ProfileScreen() {
   const [theme, setTheme] = useState('light');
+  const [isFollowing, setIsFollowing] = useState(false);   
+  const [isExpanded, setIsExpanded] = useState(false);    
+
   const currentTheme = COLORS[theme];
 
-  // 🔹 Responsive logic
   const { width } = useWindowDimensions();
   const isLargeScreen = width > 500;
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const toggleFollow = () => {
+    setIsFollowing(prev => !prev);
+  };
+
+  const toggleExpand = () => {
+    setIsExpanded(prev => !prev);
   };
 
   return (
@@ -37,8 +47,8 @@ export default function ProfileScreen() {
         />
       </Pressable>
 
-      {/* Profile Card */}
-      <View
+      {/* Profile Card  */}
+      <Pressable
         style={[
           styles.card,
           {
@@ -47,6 +57,7 @@ export default function ProfileScreen() {
             width: isLargeScreen ? '60%' : '85%',
           },
         ]}
+        onPress={toggleExpand}
       >
         <Ionicons
           name="person-circle-outline"
@@ -72,18 +83,92 @@ export default function ProfileScreen() {
           Mobile Developer
         </Text>
 
-        {/* Like Button */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.likeButton,
-            { backgroundColor: pressed ? '#e63946' : '#ff6b6b' },
+        {/*  Ek profil bilgileri */}
+        {isExpanded && (
+          <>
+            <View style={styles.infoRow}>
+              <Ionicons
+                name="location-outline"
+                size={18}
+                color={currentTheme.text}
+              />
+              <Text
+                style={[
+                  styles.infoText,
+                  { color: currentTheme.text },
+                ]}
+              >
+                Istanbul, Turkey
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons
+                name="information-circle-outline"
+                size={18}
+                color={currentTheme.text}
+              />
+              <Text
+                style={[
+                  styles.bioText,
+                  { color: currentTheme.text },
+                ]}
+              >
+                Mobile app developer intern who is open to work.
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* Like Button: action butonları */}
+        <View style={styles.actionsRow}>
+          {/* Like Button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.likeButton,
+              { backgroundColor: pressed ? '#e63946' : '#ff6b6b' },
+            ]}
+            onPress={() => console.log('Profile Liked!')}
+          >
+            <Ionicons name="heart" size={22} color="#fff" />
+            <Text style={styles.likeText}>Like</Text>
+          </Pressable>
+
+          {/* Follow Button */}
+          <Pressable
+            style={[
+              styles.followButton,
+              {
+                backgroundColor: isFollowing ? 'transparent' : '#1e88e5',
+                borderColor: '#1e88e5',
+                borderWidth: 1,
+              },
+            ]}
+            onPress={toggleFollow}
+          >
+            <Text
+              style={[
+                styles.followText,
+                {
+                  color: isFollowing ? '#1e88e5' : '#fff',
+                },
+              ]}
+            >
+              {isFollowing ? 'Following' : 'Follow'}
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* Expanded  */}
+        <Text
+          style={[
+            styles.expandHint,
+            { color: currentTheme.text },
           ]}
-          onPress={() => console.log('Profile Liked!')}
         >
-          <Ionicons name="heart" size={24} color="#fff" />
-          <Text style={styles.likeText}>Like</Text>
-        </Pressable>
-      </View>
+          {isExpanded ? 'Tap to hide details ↑' : 'Tap card to see more details ↓'}
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -105,12 +190,10 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: RADII.md,
     alignItems: 'center',
-    // iOS shadow
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
-    // Android shadow
     elevation: 6,
   },
 
@@ -127,13 +210,40 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: SPACING.sm,
+    paddingHorizontal: SPACING.sm,
+  },
+
+  infoText: {
+    fontFamily: FONTS.regular,
+    fontSize: 14,
+    marginLeft: SPACING.sm,
+  },
+
+  bioText: {
+    fontFamily: FONTS.regular,
+    fontSize: 14,
+    marginLeft: SPACING.sm,
+    marginTop: 2,
+    flexShrink: 1,
+  },
+
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: SPACING.md,
+    gap: SPACING.sm, 
+  },
+
   likeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: SPACING.sm,
     paddingHorizontal: SPACING.lg,
     borderRadius: 50,
-    marginTop: SPACING.md,
   },
 
   likeText: {
@@ -141,5 +251,24 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: 16,
     marginLeft: SPACING.sm,
+  },
+
+  followButton: {
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: 50,
+  },
+
+  followText: {
+    fontFamily: FONTS.bold,
+    fontSize: 16,
+  },
+
+  expandHint: {
+    fontFamily: FONTS.regular,
+    fontSize: 12,
+    opacity: 0.6,
+    marginTop: SPACING.md,
+    textAlign: 'center',
   },
 });
